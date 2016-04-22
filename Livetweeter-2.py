@@ -10,7 +10,7 @@ from datetime import datetime
 #from datetime import date
 #from time import *
 import string, os, sys, subprocess, time
-#import psycopg2
+import psycopg2
 
 # get access to the twitter API
 APP_KEY = '3PXJFtAYtia7CXFYEcAQDjyMW'
@@ -20,10 +20,10 @@ OAUTH_TOKEN_SECRET = 'U4Q7kx9apYH5628G5gpDpzTulYsx7SKy2shkO95wropCx'
 #twitter = Twython(APP_KEY, APP_SECRET,OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 
 # Connect to a database
-#conn = psycopg2.connect("dbname=gis user=postgres password=Entrada001")
+conn = psycopg2.connect("dbname=gis user=postgres password=Entrada001")
 
 # Open a cursor to perform database operations
-#cur = conn.cursor()
+cur = conn.cursor()
 
 #Class to process JSON data comming from the twitter stream API. Extract relevant fields
 class MyStreamer(TwythonStreamer):
@@ -78,16 +78,18 @@ class MyStreamer(TwythonStreamer):
                 place_lat = ((lat1 + lat2 + lat3 + lat4)/4)
                 place_lon = ((lon1 + lon2 + lon3 + lon4)/4)
  
-        if tweet_lat != 0:
+        if (tweet_lat != 0) or (place_lat !=0):
             #some elementary output to console    
             print str(tweet_datetime)+", "+str(tweet_lat)+", "+str(tweet_lon)+": "+tweet_text
-        else:
-            if place_lat != 0:
-                print str(tweet_datetime)+", "+str(place_lat)+", "+str(place_lon)+": "+tweet_text+"============================="
-               
-            #insert into POSTGRESGL database (perhaps replace it in the future with a stored procedure for performance reasons)
             #cur.execute('INSERT INTO gimatweets (tweet_id, tweet_datetime, tweet_text, latitude, longitude,tweet_name,retweet_count,place_lat,place_lon) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);', (tweet_id, tweet_datetime, tweet_text, tweet_lat,tweet_lon,tweet_name,retweet_count,place_lat,place_lon))
             #conn.commit()                                                                                                                                             
+        #else:
+        #   if place_lat != 0:
+        #        print str(tweet_datetime)+", "+str(place_lat)+", "+str(place_lon)+": "+tweet_text+"============================="
+        #        cur.execute('INSERT INTO gimatweets (tweet_id, tweet_datetime, tweet_text, latitude, longitude,tweet_name,retweet_count,place_lat,place_lon) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);', (tweet_id, tweet_datetime, tweet_text, tweet_lat,tweet_lon,tweet_name,retweet_count,place_lat,place_lon))
+        #        conn.commit()                                                                                                                                             
+            
+            
                     
     def on_error(self, status_code, data):
         print "OOPS FOUTJE: " +str(status_code)
