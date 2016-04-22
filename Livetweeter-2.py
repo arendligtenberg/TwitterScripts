@@ -81,6 +81,14 @@ class MyStreamer(TwythonStreamer):
         if (tweet_lat != 0) or (place_lat !=0):
             #some elementary output to console    
             print str(tweet_datetime)+", "+str(tweet_lat)+", "+str(tweet_lon)+": "+tweet_text
+<<<<<<< HEAD
+=======
+        else:
+            if place_lat != 0:
+                print str(tweet_datetime)+", "+str(place_lat)+", "+str(place_lon)+": "+tweet_text+"============================="
+        
+            #insert into POSTGRESGL database (perhaps replace it in the future with a stored procedure for performance reasons)
+>>>>>>> cd0e4d6a5541ed90970a8c3e3d030d8107700afe
             #cur.execute('INSERT INTO gimatweets (tweet_id, tweet_datetime, tweet_text, latitude, longitude,tweet_name,retweet_count,place_lat,place_lon) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);', (tweet_id, tweet_datetime, tweet_text, tweet_lat,tweet_lon,tweet_name,retweet_count,place_lat,place_lon))
             #conn.commit()                                                                                                                                             
         #else:
