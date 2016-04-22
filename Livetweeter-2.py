@@ -87,7 +87,7 @@ class MyStreamer(TwythonStreamer):
             cur.execute('INSERT INTO gimatweets (tweet_id, tweet_datetime, tweet_text, latitude, longitude,tweet_name,retweet_count,place_lat,place_lon) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);', (tweet_id, tweet_datetime, tweet_text, tweet_lat,tweet_lon,tweet_name,retweet_count,place_lat,place_lon))
             conn.commit()                                                                                                                                             
         else:
-            print "no coordinates found for tweet nr: " + str(tweet_id)
+            print "no coordinates found for tweet name: " + str(tweet_name)
             
                     
     def on_error(self, status_code, data):
