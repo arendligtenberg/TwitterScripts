@@ -20,10 +20,10 @@ OAUTH_TOKEN_SECRET = 'U4Q7kx9apYH5628G5gpDpzTulYsx7SKy2shkO95wropCx'
 #twitter = Twython(APP_KEY, APP_SECRET,OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 
 # Connect to a database
-#conn = psycopg2.connect("dbname=gis user=postgres password=Entrada001")
+conn = psycopg2.connect("dbname=gis user=postgres password=Entrada001")
 
 # Open a cursor to perform database operations
-#cur = conn.cursor()
+cur = conn.cursor()
 
 #Class to process JSON data comming from the twitter stream API. Extract relevant fields
 class MyStreamer(TwythonStreamer):
@@ -41,12 +41,14 @@ class MyStreamer(TwythonStreamer):
             tweet_id = data['id']
         if 'text' in data:
             tweet_text = data['text'].encode('utf-8').replace("'","''").replace(';','')
+
         if 'coordinates' in data:    
             geo = data['coordinates']
             if not geo is None:
                 latlon = geo['coordinates']
                 tweet_lon = latlon[0]
                 tweet_lat= latlon[1]
+
         if 'created_at' in data:
             dt = data['created_at']
             tweet_datetime = datetime.strptime(dt, '%a %b %d %H:%M:%S +0000 %Y')
@@ -58,7 +60,7 @@ class MyStreamer(TwythonStreamer):
         if 'retweet_count' in data:
             retweet_count = data['retweet_count']  
 
-            # Added these parameters for network analysis Module 6.
+        # Added these parameters for network analysis Module 6.
         
         if 'places' in data:
             plaats = data['places']
@@ -78,15 +80,14 @@ class MyStreamer(TwythonStreamer):
                 lon4 = latlon4[1]
                 place_lat = ((lat1 + lat2 + lat3 + lat4)/4)
                 place_lon = ((lon1 + lon2 + lon3 + lon4)/4)
-                print place_lat
  
         if (tweet_lat != 0) or (place_lat !=0):
             #some elementary output to console    
             print str(tweet_datetime)+", "+str(tweet_lat)+", "+str(tweet_lon)+": "+tweet_name+","+tweet_text
-            #cur.execute('INSERT INTO gimatweets (tweet_id, tweet_datetime, tweet_text, latitude, longitude,tweet_name,retweet_count,place_lat,place_lon) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);', (tweet_id, tweet_datetime, tweet_text, tweet_lat,tweet_lon,tweet_name,retweet_count,place_lat,place_lon))
-            #conn.commit()                                                                                                                                             
+            cur.execute('INSERT INTO gimatweets (tweet_id, tweet_datetime, tweet_text, latitude, longitude,tweet_name,retweet_count,place_lat,place_lon) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);', (tweet_id, tweet_datetime, tweet_text, tweet_lat,tweet_lon,tweet_name,retweet_count,place_lat,place_lon))
+            conn.commit()                                                                                                                                             
         else:
-            print "no coordinates found for tweet: " + str(tweet_id)
+            print "no coordinates found for tweet nr: " + str(tweet_id)
             
                     
     def on_error(self, status_code, data):
