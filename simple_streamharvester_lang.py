@@ -6,7 +6,7 @@
 
 #===============================
 
-from twython import TwythonStreamer
+from twython import *
 import string, json, pprint
 import urllib
 from datetime import datetime
@@ -57,7 +57,7 @@ class MyStreamer(TwythonStreamer):
                     
          if tweet_lat != 0:
                     #some elementary output to console    
-                    string_to_write = str(tweet_lang)+", "+str(tweet_lat)+", "+str(tweet_lon)+": "+str(tweet_text)
+                    string_to_write = str(tweet_lang)+", "+str(tweet_datetime)+", "+str(tweet_lon)+": "+str(tweet_text)+": "+str(tweet_lang)
                     print string_to_write
                     write_tweet(string_to_write)
 
