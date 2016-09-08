@@ -32,6 +32,7 @@ class MyStreamer(TwythonStreamer):
         tweet_lon = 0.0
         tweet_name = ''
         retweet_count = 0
+        tweet_id = 0
         place_lat = 0.0
         place_lon = 0.0
         # Can we use this to filter out popular tweets?
@@ -40,12 +41,14 @@ class MyStreamer(TwythonStreamer):
             tweet_id = data['id']
         if 'text' in data:
             tweet_text = data['text'].encode('utf-8').replace("'","''").replace(';','')
+
         if 'coordinates' in data:    
             geo = data['coordinates']
             if not geo is None:
                 latlon = geo['coordinates']
                 tweet_lon = latlon[0]
                 tweet_lat= latlon[1]
+
         if 'created_at' in data:
             dt = data['created_at']
             tweet_datetime = datetime.strptime(dt, '%a %b %d %H:%M:%S +0000 %Y')
@@ -57,8 +60,8 @@ class MyStreamer(TwythonStreamer):
         if 'retweet_count' in data:
             retweet_count = data['retweet_count']  
 
-            # Added these parameters for network analysis Module 6.
-
+        # Added these parameters for network analysis Module 6.
+        
         if 'places' in data:
             plaats = data['places']
             bb = plaats['bounding_box']
@@ -80,23 +83,11 @@ class MyStreamer(TwythonStreamer):
  
         if (tweet_lat != 0) or (place_lat !=0):
             #some elementary output to console    
-            print str(tweet_datetime)+", "+str(tweet_lat)+", "+str(tweet_lon)+": "+tweet_text
-<<<<<<< HEAD
-=======
+            print str(tweet_datetime)+", "+str(tweet_lat)+", "+str(tweet_lon)+": "+tweet_name+","+tweet_text
+            cur.execute('INSERT INTO gimatweets (tweet_id, tweet_datetime, tweet_text, latitude, longitude,tweet_name,retweet_count,place_lat,place_lon) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);', (tweet_id, tweet_datetime, tweet_text, tweet_lat,tweet_lon,tweet_name,retweet_count,place_lat,place_lon))
+            conn.commit()                                                                                                                                             
         else:
-            if place_lat != 0:
-                print str(tweet_datetime)+", "+str(place_lat)+", "+str(place_lon)+": "+tweet_text+"============================="
-        
-            #insert into POSTGRESGL database (perhaps replace it in the future with a stored procedure for performance reasons)
->>>>>>> cd0e4d6a5541ed90970a8c3e3d030d8107700afe
-            #cur.execute('INSERT INTO gimatweets (tweet_id, tweet_datetime, tweet_text, latitude, longitude,tweet_name,retweet_count,place_lat,place_lon) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);', (tweet_id, tweet_datetime, tweet_text, tweet_lat,tweet_lon,tweet_name,retweet_count,place_lat,place_lon))
-            #conn.commit()                                                                                                                                             
-        #else:
-        #   if place_lat != 0:
-        #        print str(tweet_datetime)+", "+str(place_lat)+", "+str(place_lon)+": "+tweet_text+"============================="
-        #        cur.execute('INSERT INTO gimatweets (tweet_id, tweet_datetime, tweet_text, latitude, longitude,tweet_name,retweet_count,place_lat,place_lon) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);', (tweet_id, tweet_datetime, tweet_text, tweet_lat,tweet_lon,tweet_name,retweet_count,place_lat,place_lon))
-        #        conn.commit()                                                                                                                                             
-            
+            print "no coordinates found for tweet name: " + str(tweet_name)
             
                     
     def on_error(self, status_code, data):
