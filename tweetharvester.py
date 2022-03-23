@@ -1,5 +1,5 @@
 ##Example script harvesting tweet using REST api
-##Arend Ligtenberg, GIRS, jan 2016stt
+##Arend Ligtenberg, GIRS, 
 ##Just simple Python scripting mode, so no classes etc.
 
 
